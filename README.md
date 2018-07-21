@@ -2,8 +2,8 @@
 This a modification to the QuasiTiler v0.2 by Eugenio Durand. The original source code, on which this project is built, can be downloaded from [here](https://sourceforge.net/projects/quasitiler/). This project is licensed under the terms of the GNU General Public License.
 
 How to run it:
-1. Compile the source code by executing __compile.cmd__ (for Windows) or __compile.sh__ (for Mac/Linus). (You only need to do it once.)
-2. Run the program by executing __run.cmd__ (for Windows) or __run.sh__ (for Mac/Linus).
+1. Compile the source code by executing __compile.cmd__ (for Windows) or __compile.sh__ (for Mac/Linux). (You only need to do it once.)
+2. Run the program by executing __run.cmd__ (for Windows) or __run.sh__ (for Mac/Linux).
 
 For an excellent explanation about the how the program works, please consult an [article](http://www.geom.uiuc.edu/apps/quasitiler/about.html) written by the original author, _Eugenio Durand_, of this program.
 
