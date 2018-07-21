@@ -1,5 +1,5 @@
 # QuasiTiler
-This a modification to the QuasiTiler v0.2 by Eugenio Durand, the original source code on which this project is built can be download from [here](https://sourceforge.net/projects/quasitiler/). This project is licensed under the terms of the GNU General Public License.
+This a modification to the QuasiTiler v0.2 by Eugenio Durand. The original source code, on which this project is built, can be downloaded from [here](https://sourceforge.net/projects/quasitiler/). This project is licensed under the terms of the GNU General Public License.
 
 How to run it:
 1. Compile the source code by executing __compile.cmd__ (for Windows) or __compile.sh__ (for Mac/Linus). (You only need to do it once.)
