@@ -40,7 +40,7 @@ public class Exporter {
         }
     }
 
-    public static void saveGenerator(float[][] generator, int dim) {
+    public static void saveGenerator(double[][] generator, int dim) {
         try {
             FileWriter write = new FileWriter("export/generator.txt", false);
             PrintWriter print_line = new PrintWriter(write);

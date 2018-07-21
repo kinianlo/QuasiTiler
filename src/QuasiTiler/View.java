@@ -12,5 +12,5 @@ package QuasiTiler;
 public interface View {
     public void repaint();
 
-    public void setZoom(float aZoom);
+    public void setZoom(double aZoom);
 }

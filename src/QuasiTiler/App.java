@@ -20,9 +20,9 @@ import java.awt.event.WindowAdapter;
 
 public class App {
 	static private int default_dim = 5;
-	static private float default_zoom = 10;
-	static private float[][] default_bounds = { { 0, 0, 0, 0, 0 }, { 10, 10, 10, 10, 10 } };
-	static private float[] default_offsets = { 0.0f, 0.0f, (float) Math.sqrt(5.0) / 2.0f, 0.001f, 0.001f };
+	static private double default_zoom = 10;
+	static private double[][] default_bounds = { { 0, 0, 0, 0, 0 }, { 10, 10, 10, 10, 10 } };
+	static private double[] default_offsets = { 0.0, 0.0, (double) Math.sqrt(5.0) / 2.0, 0.001, 0.001 };
 
 	public static void main(String[] args) {
 		// Parse arguments.
@@ -43,14 +43,14 @@ public class App {
 			}
 		if (args.length > 1)
 			try {
-				default_zoom = Float.valueOf(args[1]).floatValue();
+				default_zoom = double.valueOf(args[1]).doubleValue();
 			} catch (NumberFormatException e) {
 				System.err.println("Argument #2 error: " + e.getMessage());
 			}
 		for (int i = 0; i < default_dim * 2; ++i)
 			if (args.length > i + 2)
 				try {
-					default_bounds[i % 2][i / 2] = Float.valueOf(args[i + 2]).floatValue();
+					default_bounds[i % 2][i / 2] = double.valueOf(args[i + 2]).doubleValue();
 				} catch (NumberFormatException e) {
 					System.err.println("Argument #" + (i + 3) + " error: " + e.getMessage());
 				}
@@ -58,7 +58,7 @@ public class App {
 		for (int i = 0; i < default_dim; ++i)
 			if (args.length > i + 2 + default_dim * 2)
 				try {
-					default_offsets[i] = Float.valueOf(args[i + 2 + default_dim * 2]).floatValue();
+					default_offsets[i] = double.valueOf(args[i + 2 + default_dim * 2]).doubleValue();
 				} catch (NumberFormatException e) {
 					System.err.println("Argument #" + (i + 3 + default_dim * 2) + " error: " + e.getMessage());
 				}

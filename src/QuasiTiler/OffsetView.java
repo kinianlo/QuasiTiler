@@ -30,7 +30,7 @@ public class OffsetView extends Canvas implements View {
        *** Modifiers.
        **/
 
-      public void setZoom(float aZoom) {
+      public void setZoom(double aZoom) {
             zoom = aZoom;
       }
 
@@ -38,7 +38,7 @@ public class OffsetView extends Canvas implements View {
        *** Computers.
        **/
 
-      private static final float OFFSETVIEW_RADIUS = 1.6f;
+      private static final double OFFSETVIEW_RADIUS = 1.6;
 
       public void paint(Graphics gfx) {
             if (gfx instanceof Graphics2D) {
@@ -53,24 +53,24 @@ public class OffsetView extends Canvas implements View {
             if (null == tiling || null == drawing)
                   return;
 
-            final float[] relative_offset = tiling.offset;
+            final double[] relative_offset = tiling.offset;
 
             // If the dimension is 3, there is not much to do
-            float[] offset_coords = { 0.0f, 0.0f };
+            double[] offset_coords = { 0.0, 0.0 };
             offset_coords[1] = relative_offset[0];
             // if ( tiling.ambient_dim > 3 )
             {
                   offset_coords[0] = relative_offset[1];
                   // Allocate memory for the array of vertices
                   int vertex_count = 1 << tiling.ambient_dim;
-                  float[][] cell_vertex = new float[vertex_count][2];
+                  double[][] cell_vertex = new double[vertex_count][2];
 
                   // Compute the vertices of the cell projection
                   for (int ind = 0; ind < vertex_count; ind++) {
-                        float dot_0 = 0.0f;
-                        float dot_1 = 0.0f;
+                        double dot_0 = 0.0;
+                        double dot_1 = 0.0;
                         for (int ind1 = 0, mask = 1; ind1 < tiling.ambient_dim; ind1++, mask <<= 1) {
-                              float vertex_coord = (0 != (ind & mask) ? 0.5f : -0.5f);
+                              double vertex_coord = (0 != (ind & mask) ? 0.5 : -0.5);
                               dot_0 += vertex_coord * tiling.generator[Tiling.TARGET_DIM + 1][ind1];
                               dot_1 += vertex_coord * tiling.generator[Tiling.TARGET_DIM][ind1];
                         }
@@ -101,7 +101,7 @@ public class OffsetView extends Canvas implements View {
                         return;
 
                   gfx.setColor(Color.black);
-                  float avg_density = cnt / (float) (OFFSETVIEW_RADIUS * OFFSETVIEW_RADIUS);
+                  double avg_density = cnt / (double) (OFFSETVIEW_RADIUS * OFFSETVIEW_RADIUS);
                   // if ( avg_density == 0) PSsetlinewidth(0.075);
                   // else PSsetlinewidth(sqrt(1/avg_density));
 
@@ -136,5 +136,5 @@ public class OffsetView extends Canvas implements View {
        **/
 
       private QuasiTiler quasi;
-      private float zoom = 30;
+      private double zoom = 30;
 }

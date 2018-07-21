@@ -22,8 +22,8 @@ public class Tiling {
       public static final int MAX_TILE_COMB = MAX_DIM * (MAX_DIM - 1) / 2;
       public static final int MAX_CYLR_COMB = MAX_DIM * (MAX_DIM - 1) * (MAX_DIM - 2) / 6;
       public static final int TARGET_DIM = 2;
-      public static final float EPSILON = 0.000001f;
-      public static final float M_PI = (float) Math.PI;
+      public static final double EPSILON = 0.000001;
+      public static final double M_PI = (double) Math.PI;
 
       /**
        *** Constructors. Calls init_default().
@@ -44,15 +44,15 @@ public class Tiling {
 
       int ambient_dim = 5;
 
-      float[] offset = new float[MAX_DIM];
-      float[][] generator = new float[MAX_DIM][MAX_DIM];
+      double[] offset = new double[MAX_DIM];
+      double[][] generator = new double[MAX_DIM][MAX_DIM];
 
       int crit_count;
-      float[][] cylinder_criteria = new float[MAX_CYLR_COMB][MAX_DIM];
+      double[][] cylinder_criteria = new double[MAX_CYLR_COMB][MAX_DIM];
 
       int[] co = new int[MAX_DIM]; /* the coordinate order */
 
-      float[][] parametrization = new float[TARGET_DIM][TARGET_DIM];
+      double[][] parametrization = new double[TARGET_DIM][TARGET_DIM];
 
       int[] so = new int[MAX_DIM]; /* the slope order */
       int[] sgn = new int[MAX_DIM];
@@ -65,15 +65,15 @@ public class Tiling {
        *** Utility functions.
        **/
 
-      public static final float my_abs(float f) {
+      public static final double my_abs(double f) {
             return f < 0 ? -f : f;
       }
 
-      public static final int my_sgn(float f) {
+      public static final int my_sgn(double f) {
             return f < 0 ? -1 : f > 0 ? 1 : 0;
       }
 
-      public static final int e_compare(float x, float y) {
+      public static final int e_compare(double x, double y) {
             return (x < y - EPSILON) ? -1 : (x > y + EPSILON) ? 1 : 0;
       }
 
@@ -82,12 +82,12 @@ public class Tiling {
        * for us.
        **/
 
-      public static final int my_floor(float x) {
+      public static final int my_floor(double x) {
             int i = (int) x;
             return i <= x ? i : i - 1;
       }
 
-      public static final int my_ceil(float x) {
+      public static final int my_ceil(double x) {
             int i = (int) x;
             return i >= x ? i : i + 1;
       }
@@ -98,8 +98,8 @@ public class Tiling {
 
       /* Computes the dot product */
 
-      public float dot_product(float[] x, float[] y) {
-            float prod = 0.0f;
+      public double dot_product(double[] x, double[] y) {
+            double prod = 0.0;
 
             for (int ind = ambient_dim; --ind >= 0;)
                   prod += x[ind] * y[ind];
@@ -108,14 +108,14 @@ public class Tiling {
 
       /* Computes x = s*y */
 
-      public void scalar_mult(float[] x, float s, float[] y) {
+      public void scalar_mult(double[] x, double s, double[] y) {
             for (int ind = ambient_dim; --ind >= 0;)
                   x[ind] = s * y[ind];
       }
 
       /* Computes x = x + s*y */
 
-      public void add_to(float[] x, float s, float[] y) {
+      public void add_to(double[] x, double s, double[] y) {
             for (int ind = ambient_dim; --ind >= 0;)
                   x[ind] += s * y[ind];
       }
@@ -132,35 +132,35 @@ public class Tiling {
             // to ( 1, -1, 1, -1,... )
 
             for (int ind2 = 0; ind2 < ambient_dim; ++ind2)
-                  generator[TARGET_DIM][ind2] = ((ind2 % 2) != 0 ? -1.0f : 1.0f);
+                  generator[TARGET_DIM][ind2] = ((ind2 % 2) != 0 ? -1.0 : 1.0);
 
             // Initialize the second generator of the orthogonal space
             // to ( 1, 1, 1, ... )
 
             if (TARGET_DIM + 1 < ambient_dim)
                   for (int ind2 = 0; ind2 < ambient_dim; ++ind2)
-                        generator[TARGET_DIM + 1][ind2] = 1.0f;
+                        generator[TARGET_DIM + 1][ind2] = 1.0;
 
             // Initialize the rest with the canonical basis, which may not
             // give a linearly independent basis, but it is highly improbable
 
             for (int ind = TARGET_DIM + 1; ind < ambient_dim; ++ind)
                   for (int ind2 = 0; ind2 < ambient_dim; ++ind2)
-                        generator[ind][ind2] = (ind == ind2 ? 1.0f : 0.0f);
+                        generator[ind][ind2] = (ind == ind2 ? 1.0 : 0.0);
 
             // Grahm-Schmitt on the generators of tiling's plane
 
             for (int ind = 0; ind < ambient_dim; ++ind) {
-                  float[] sum = new float[MAX_DIM];
+                  double[] sum = new double[MAX_DIM];
                   for (int ind2 = 0; ind2 < ambient_dim; ++ind2)
-                        sum[ind2] = 0.0f;
+                        sum[ind2] = 0.0;
                   for (int ind2 = 0; ind2 < ind; ++ind2) {
-                        float scalar = dot_product(generator[ind], generator[ind2]);
+                        double scalar = dot_product(generator[ind], generator[ind2]);
                         add_to(sum, scalar, generator[ind2]);
                   }
-                  add_to(generator[ind], -1.0f, sum);
+                  add_to(generator[ind], -1.0, sum);
 
-                  float scalar = (float) Math.sqrt(dot_product(generator[ind], generator[ind]));
+                  double scalar = (double) Math.sqrt(dot_product(generator[ind], generator[ind]));
 
                   if (e_compare(scalar, 0) == 0)
                         return false;
@@ -181,13 +181,13 @@ public class Tiling {
             // perpendicular to any of the lattice directions
 
             for (int ind = 0; ind < ambient_dim; ++ind) {
-                  float[] projection = new float[MAX_DIM];
+                  double[] projection = new double[MAX_DIM];
                   for (int ind2 = 0; ind2 < ambient_dim; ++ind2)
-                        projection[ind2] = 0.0f;
+                        projection[ind2] = 0.0;
                   /* Project the ind-th generator into theTiling */
                   for (int ind2 = 0; ind2 < TARGET_DIM; ++ind2)
                         add_to(projection, generator[ind2][ind], generator[ind2]);
-                  float scalar = (float) Math.sqrt(dot_product(projection, projection));
+                  double scalar = (double) Math.sqrt(dot_product(projection, projection));
                   if (e_compare(scalar, 0) == 0)
                         return false;
                   if (e_compare(scalar, 1) == 0)
@@ -253,9 +253,9 @@ public class Tiling {
                    * Find the vector orthogonal to the current choice of coordinate axis and
                    * theTiling subspace
                    */
-                  float[] x = new float[3];
-                  float[] y = new float[3];
-                  float[] z = new float[3];
+                  double[] x = new double[3];
+                  double[] y = new double[3];
+                  double[] z = new double[3];
                   for (int ind = 0, dim = 0; ind < ambient_dim; ++ind)
                         if (choosen[ind]) {
                               x[dim] = generator[0][ind];
@@ -274,13 +274,13 @@ public class Tiling {
                               cylinder_criteria[crit_index][ind] = z[dim];
                               ++dim;
                         } else {
-                              cylinder_criteria[crit_index][ind] = 0.0f;
+                              cylinder_criteria[crit_index][ind] = 0.0;
                         }
                   }
 
                   // Now find the extreme values for the criteria.
 
-                  float scalar = 0.0f;
+                  double scalar = 0.0;
                   int sign = 0;
                   for (int ind = 0; ind < ambient_dim; ++ind) {
                         scalar += my_abs(cylinder_criteria[crit_index][ind]);
@@ -301,7 +301,7 @@ public class Tiling {
                   // make the first nonzero coordinate positive so we can
                   // distinguish between opposite corners.
 
-                  scalar_mult(cylinder_criteria[crit_index], sign * 2.0f / scalar, cylinder_criteria[crit_index]);
+                  scalar_mult(cylinder_criteria[crit_index], sign * 2.0 / scalar, cylinder_criteria[crit_index]);
 
                   // Increment to the next combination. Find first which choice
                   // can be incremented next.
@@ -330,7 +330,7 @@ public class Tiling {
             // Sort co[] wrt the size of the projections of the lattice
             // generators to each of the plane generators.
 
-            float[] aux = new float[MAX_DIM];
+            double[] aux = new double[MAX_DIM];
 
             for (int ind0 = 0; ind0 < TARGET_DIM; ++ind0) {
                   // Fill the auxiliary array with the projection lengths.
@@ -353,7 +353,7 @@ public class Tiling {
                   sgn[ind0] = e_compare(generator[0][ind0], 0);
                   if (sgn[ind0] == 0)
                         sgn[ind0] = 1;
-                  aux[ind0] = (float) (sgn[ind0] * generator[1][ind0] / Math
+                  aux[ind0] = (double) (sgn[ind0] * generator[1][ind0] / Math
                               .sqrt(generator[0][ind0] * generator[0][ind0] + generator[1][ind0] * generator[1][ind0]));
             }
 
@@ -401,7 +401,7 @@ public class Tiling {
        **/
 
       public boolean init_parametrization() {
-            float[][] a = new float[TARGET_DIM][TARGET_DIM];
+            double[][] a = new double[TARGET_DIM][TARGET_DIM];
 
             // Assuming that TARGET_DIM is 2, find the inverse matrix.
 
@@ -410,7 +410,7 @@ public class Tiling {
             a[1][0] = generator[0][co[1]];
             a[1][1] = generator[1][co[1]];
 
-            float det = a[0][0] * a[1][1] - a[1][0] * a[0][1];
+            double det = a[0][0] * a[1][1] - a[1][0] * a[0][1];
             if (e_compare(det, 0) == 0)
                   return false;
 
@@ -434,9 +434,9 @@ public class Tiling {
       public boolean init_default(int dimension) {
             ambient_dim = dimension;
             for (int ind = 0; ind < ambient_dim; ++ind) {
-                  float theta = M_PI * ((float) ind / (float) ambient_dim - 0.5f);
-                  generator[0][ind] = (float) Math.cos(theta);
-                  generator[1][ind] = (float) Math.sin(theta);
+                  double theta = M_PI * ((double) ind / (double) ambient_dim - 0.5);
+                  generator[0][ind] = (double) Math.cos(theta);
+                  generator[1][ind] = (double) Math.sin(theta);
             }
 
             return true;
@@ -451,7 +451,7 @@ public class Tiling {
        *** init() returns false if it cannot finish the computation for any reason.
        **/
 
-      public boolean init(float[] relative_offset) {
+      public boolean init(double[] relative_offset) {
             crit_count = ambient_dim * (ambient_dim - 1) * (ambient_dim - 2) / 6;
             tile_count = ambient_dim * (ambient_dim - 1) / 2;
 
@@ -468,7 +468,7 @@ public class Tiling {
             // tiling plane.
 
             for (int ind = 0; ind < ambient_dim; ++ind)
-                  offset[ind] = 0.0f;
+                  offset[ind] = 0.0;
             for (int ind = TARGET_DIM; ind < ambient_dim; ++ind)
                   // for ( int ind = 0 ; ind < ambient_dim ; ++ind )
                   add_to(offset, relative_offset[ind], generator[ind]);
@@ -500,14 +500,14 @@ public class Tiling {
             return init(offset);
       }
 
-      public boolean rotateGenerators(float degrees) {
+      public boolean rotateGenerators(double degrees) {
             double cos = Math.cos(degrees);
             double sin = Math.sin(degrees);
             for (int ind = 0; ind < ambient_dim; ++ind) {
-                  final float x = generator[0][ind];
-                  final float y = generator[1][ind];
-                  float x2 = (float) (x * cos - y * sin);
-                  float y2 = (float) (y * cos + x * sin);
+                  final double x = generator[0][ind];
+                  final double y = generator[1][ind];
+                  double x2 = (double) (x * cos - y * sin);
+                  double y2 = (double) (y * cos + x * sin);
                   if (x2 < 0) {
                         x2 *= -1;
                         y2 *= -1;
@@ -523,8 +523,8 @@ public class Tiling {
        * bounding box of the plane in generators coords.
        **/
 
-      public void compute_ambient_bounds(float[][] tiling_bounds, int[][] bounds) {
-            float[][][] corner = new float[2][2][MAX_DIM];
+      public void compute_ambient_bounds(double[][] tiling_bounds, int[][] bounds) {
+            double[][][] corner = new double[2][2][MAX_DIM];
 
             for (int ind0 = 0; ind0 < 2; ++ind0)
                   for (int ind1 = 0; ind1 < 2; ++ind1) {
@@ -538,7 +538,7 @@ public class Tiling {
 
             // Now we find the max and min.
 
-            float[][] ambient_bounds = new float[2][MAX_DIM];
+            double[][] ambient_bounds = new double[2][MAX_DIM];
 
             for (int ind = 0; ind < ambient_dim; ++ind) {
                   ambient_bounds[0][ind] = corner[0][0][ind];
@@ -554,7 +554,7 @@ public class Tiling {
                   // Add/substract sqrt of dim to acomodate for the cylinder
                   // thickness.
 
-                  float thick = (float) Math.sqrt(ambient_dim);
+                  double thick = (double) Math.sqrt(ambient_dim);
                   bounds[0][ind] = my_floor(ambient_bounds[0][ind] - thick);
                   bounds[1][ind] = my_ceil(ambient_bounds[1][ind] + thick);
             }
@@ -568,7 +568,7 @@ public class Tiling {
        * coords and the plane coords
        **/
 
-      public void parametrization(int[] scan_index, float[] plane_point, TilingPoint tiling_point) {
+      public void parametrization(int[] scan_index, double[] plane_point, TilingPoint tiling_point) {
             for (int ind0 = 0; ind0 < ambient_dim; ++ind0)
                   plane_point[ind0] = offset[ind0];
 
@@ -576,7 +576,7 @@ public class Tiling {
                   // Change coordinates in the plane, from canonical main coords,
                   // to the generators coords.
 
-                  float scalar = 0.0f;
+                  double scalar = 0.0;
                   for (int ind1 = 0; ind1 < TARGET_DIM; ++ind1)
                         scalar += parametrization[ind0][ind1] * (scan_index[co[ind1]] - offset[co[ind1]]);
 
@@ -601,7 +601,7 @@ public class Tiling {
 
             // Translate by the offset.
 
-            float[] trans_point = new float[MAX_DIM];
+            double[] trans_point = new double[MAX_DIM];
             for (int ind1 = 0; ind1 < ambient_dim; ++ind1)
                   trans_point[ind1] = point[ind1] - offset[ind1];
 
@@ -610,11 +610,11 @@ public class Tiling {
             for (int ind = 0; ind < crit_count; ++ind) {
                   // Compute the dot product. For efficiency, no function call.
 
-                  float dot_p = 0.0f;
-                  float[] current_criteria = cylinder_criteria[ind];
+                  double dot_p = 0.0;
+                  double[] current_criteria = cylinder_criteria[ind];
                   for (int ind1 = 0; ind1 < ambient_dim; ++ind1)
                         dot_p += current_criteria[ind1] * trans_point[ind1];
-                  float ans = 1.0f - my_abs(dot_p);
+                  double ans = 1.0 - my_abs(dot_p);
                   if (ans < EPSILON)
                         return false; // outside.
             }
@@ -637,7 +637,7 @@ public class Tiling {
        *** generate() returns false if it cannot finish the computation for any reason.
        **/
 
-      public boolean generate(float[][] tiling_bounds, Reporter reporter, Interruptor interruptor) {
+      public boolean generate(double[][] tiling_bounds, Reporter reporter, Interruptor interruptor) {
             // Find the bounds relative to the ambient space, for the bounds
             // in the tiling subspace in.
 
@@ -652,8 +652,8 @@ public class Tiling {
 
             // Scaning this tiling.
 
-            float diag = (float) Math.sqrt(2.0);
-            float[] plane_point = new float[MAX_DIM];
+            double diag = (double) Math.sqrt(2.0);
+            double[] plane_point = new double[MAX_DIM];
             TilingPoint tilingPoint = new TilingPoint();
             while (scan_index[co[0]] <= bounds[1][co[0]]) {
                   // Find the next point in the tiling parametrization.
@@ -662,9 +662,9 @@ public class Tiling {
 
                   // Do some preliminary clipping here.
 
-                  if (tilingPoint.x > (tiling_bounds[0][0] - 2.0f) && tilingPoint.x < (tiling_bounds[1][0] + 2.0f)
-                              && tilingPoint.y > (tiling_bounds[0][1] - 2.0f)
-                              && tilingPoint.y < (tiling_bounds[1][1] + 2.0f)) {
+                  if (tilingPoint.x > (tiling_bounds[0][0] - 2.0) && tilingPoint.x < (tiling_bounds[1][0] + 2.0)
+                              && tilingPoint.y > (tiling_bounds[0][1] - 2.0)
+                              && tilingPoint.y < (tiling_bounds[1][1] + 2.0)) {
                         // Find the bounds for the intersection of the tiling's
                         // plane with the remaining coordinates.
 

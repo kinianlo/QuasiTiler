@@ -102,7 +102,7 @@ public class Drawing implements Reporter, Comparator {
     }
 
     public void lattice_to_tiling(int[] l_point, int offset, TilingPoint t_point) {
-        t_point.x = t_point.y = 0.0f;
+        t_point.x = t_point.y = 0.0;
         for (int ind = 0; ind < theTiling.ambient_dim; ++ind) {
             t_point.x += l_point[offset + ind] * theTiling.generator[0][ind];
             t_point.y += l_point[offset + ind] * theTiling.generator[1][ind];
@@ -110,7 +110,7 @@ public class Drawing implements Reporter, Comparator {
     }
 
     public void lattice_to_orthogonal(int[] l_point, int offset, TilingPoint o_point) {
-        o_point.x = o_point.y = 0.0f;
+        o_point.x = o_point.y = 0.0;
         for (int ind = 0; ind < theTiling.ambient_dim; ++ind) {
             o_point.y += (l_point[ind] - theTiling.offset[ind]) * theTiling.generator[Tiling.TARGET_DIM][ind];
             o_point.x += (l_point[ind] - theTiling.offset[ind]) * theTiling.generator[Tiling.TARGET_DIM + 1][ind];

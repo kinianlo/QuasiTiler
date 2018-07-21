@@ -123,7 +123,7 @@ public class QuasiUI extends Panel implements AdjustmentListener, ItemListener, 
     }
 
     private void updateSelectedDim() {
-        float value = quasi.getBound(0, selected_dim);
+        double value = quasi.getBound(0, selected_dim);
         low.setValue((int) (value * scale_factor));
         low_label.setText(low_text + value);
 
@@ -142,7 +142,7 @@ public class QuasiUI extends Panel implements AdjustmentListener, ItemListener, 
 
     public void adjustmentValueChanged(AdjustmentEvent ev) {
         final Object source = ev.getSource();
-        float value = ev.getValue() / (float) scale_factor;
+        double value = ev.getValue() / (double) scale_factor;
         if (source == low) {
             low_label.setText(low_text + value);
             quasi.setBound(value, 0, selected_dim);

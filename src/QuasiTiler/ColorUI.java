@@ -86,7 +86,7 @@ public class ColorUI extends Panel3D implements MouseListener, View {
      ** View implementation.
      */
 
-    public void setZoom(float aZoom) {
+    public void setZoom(double aZoom) {
     }
 
     public void paint(Graphics gfx) {

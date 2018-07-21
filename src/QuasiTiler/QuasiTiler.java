@@ -34,22 +34,22 @@ public class QuasiTiler implements View {
         quasi_dim = aDim;
     }
 
-    public void setBounds(float[][] someBounds) {
+    public void setBounds(double[][] someBounds) {
         for (int i = someBounds.length; --i >= 0;)
             for (int j = someBounds[i].length; --j >= 0;)
                 quasi_bound[i][j] = someBounds[i][j];
     }
 
-    public void setBound(float aBound, int i, int j) {
+    public void setBound(double aBound, int i, int j) {
         quasi_bound[i][j] = aBound;
     }
 
-    public void setOffsets(float[] someOffsets) {
+    public void setOffsets(double[] someOffsets) {
         for (int i = someOffsets.length; --i >= 0;)
             quasi_offset[i] = someOffsets[i];
     }
 
-    public void setOffset(float anOffset, int i) {
+    public void setOffset(double anOffset, int i) {
         quasi_offset[i] = anOffset;
     }
 
@@ -61,7 +61,7 @@ public class QuasiTiler implements View {
         views.removeElement(aView);
     }
 
-    public void setZoom(float aZoom) {
+    public void setZoom(double aZoom) {
         // Not relevant (or zoom all views to same value?).
     }
 
@@ -111,11 +111,11 @@ public class QuasiTiler implements View {
         return quasi_dim;
     }
 
-    public float getBound(int i, int j) {
+    public double getBound(int i, int j) {
         return quasi_bound[i][j];
     }
 
-    public float getOffset(int i) {
+    public double getOffset(int i) {
         return quasi_offset[i];
     }
 
@@ -181,7 +181,7 @@ public class QuasiTiler implements View {
         }
         // Interpolate color.
 
-        float cof = (float) col / (float) row_count;
+        double cof = (double) col / (double) row_count;
 
         Color leftColor = color_table[row][0];
         Color rightColor = color_table[row][1];
@@ -210,8 +210,8 @@ public class QuasiTiler implements View {
     private Interruptor interruptor;
 
     private int quasi_dim;
-    private float[][] quasi_bound = new float[2][Tiling.MAX_DIM];
-    private float[] quasi_offset = new float[Tiling.MAX_DIM];
+    private double[][] quasi_bound = new double[2][Tiling.MAX_DIM];
+    private double[] quasi_offset = new double[Tiling.MAX_DIM];
 
     /**
      *** Views.

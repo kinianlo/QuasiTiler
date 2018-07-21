@@ -34,7 +34,7 @@ public class ZoomUI extends Panel implements AdjustmentListener {
      *** Modifiers.
      **/
 
-    public void setZoom(float aZoom) {
+    public void setZoom(double aZoom) {
         zoom.setValue((int) (aZoom * scale_factor));
         updateZoom(aZoom);
     }
@@ -43,7 +43,7 @@ public class ZoomUI extends Panel implements AdjustmentListener {
      *** Computers.
      **/
 
-    private void updateZoom(float aZoom) {
+    private void updateZoom(double aZoom) {
         text.setText("Zoom: " + aZoom);
         view.setZoom(aZoom);
         view.repaint();
@@ -56,7 +56,7 @@ public class ZoomUI extends Panel implements AdjustmentListener {
     public void adjustmentValueChanged(AdjustmentEvent ev) {
         final Object source = ev.getSource();
         if (source == zoom) {
-            updateZoom(ev.getValue() / (float) scale_factor);
+            updateZoom(ev.getValue() / (double) scale_factor);
             return;
         }
     }

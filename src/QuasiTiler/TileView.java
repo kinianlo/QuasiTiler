@@ -43,11 +43,11 @@ public class TileView extends Canvas implements View {
         verticesDisplayed = displayed;
     }
 
-    public void setZoom(float aZoom) {
+    public void setZoom(double aZoom) {
         zoom = aZoom;
     }
 
-    public void setEdgeWidth(float aWidth) {
+    public void setEdgeWidth(double aWidth) {
         edge_width = aWidth;
     }
 
@@ -90,7 +90,7 @@ public class TileView extends Canvas implements View {
 
         // Premultiply the edge generators by their correct sign.
 
-        float[][] generator = new float[Tiling.MAX_DIM][2];
+        double[][] generator = new double[Tiling.MAX_DIM][2];
         for (int ind = 0; ind < dim; ++ind) {
             generator[ind][0] = tiling.sgn[ind] * tiling.generator[0][ind];
             generator[ind][1] = tiling.sgn[ind] * tiling.generator[1][ind];
@@ -193,8 +193,8 @@ public class TileView extends Canvas implements View {
     private boolean tilesDisplayed = true;
     private boolean edgesDisplayed = true;
     private boolean verticesDisplayed = false;
-    private float zoom = 30;
-    private float edge_width = 2;
+    private double zoom = 30;
+    private double edge_width = 2;
 
     private QuasiTiler quasi;
 }

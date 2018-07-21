@@ -10,6 +10,6 @@
 package QuasiTiler;
 
 public class TilingPoint {
-    public float x;
-    public float y;
+    public double x;
+    public double y;
 }

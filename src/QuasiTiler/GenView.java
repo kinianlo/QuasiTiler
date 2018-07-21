@@ -31,7 +31,7 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
    *** Modifiers.
    **/
 
-  public void setZoom(float aZoom) {
+  public void setZoom(double aZoom) {
     zoom = aZoom;
   }
 
@@ -52,7 +52,7 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
       return;
 
     final int ambient_dim = tiling.ambient_dim;
-    float factor = 1.0f / (float) Math.sqrt(ambient_dim / 2.0f);
+    double factor = 1.0 / (double) Math.sqrt(ambient_dim / 2.0);
 
     // Draw circle with marks.
 
@@ -67,9 +67,9 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
     }
 
     for (int ind = -ambient_dim; ind < ambient_dim; ++ind) {
-      final float x = (float) (zoom * factor * Math.cos(0.5 * Math.PI + ind * Math.PI / ambient_dim));
-      final float y = (float) (zoom * factor * Math.sin(0.5 * Math.PI + ind * Math.PI / ambient_dim));
-      gfx.drawLine((int) x, (int) y, (int) (0.9f * x), (int) (0.9f * y));
+      final double x = (double) (zoom * factor * Math.cos(0.5 * Math.PI + ind * Math.PI / ambient_dim));
+      final double y = (double) (zoom * factor * Math.sin(0.5 * Math.PI + ind * Math.PI / ambient_dim));
+      gfx.drawLine((int) x, (int) y, (int) (0.9 * x), (int) (0.9 * y));
     }
 
     // Draw the small tile contours.
@@ -141,8 +141,8 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
   }
 
   public void mousePressed(MouseEvent ev) {
-    final float x = transformCoord(ev.getX());
-    final float y = transformCoord(ev.getY());
+    final double x = transformCoord(ev.getX());
+    final double y = transformCoord(ev.getY());
 
     if (x * x + y * y > rotationThreshold * rotationThreshold) {
       rotating = true;
@@ -154,13 +154,13 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
 
       // Find the closest handle to the mouse down event.
 
-      float min = 0;
+      double min = 0;
       int sel = 0;
       final Tiling tiling = quasi.getTiling();
       for (int ind = 0; ind < tiling.ambient_dim; ++ind) {
         // Try the positive side first
-        float cx = x - tiling.generator[0][ind];
-        float cy = y - tiling.generator[1][ind];
+        double cx = x - tiling.generator[0][ind];
+        double cy = y - tiling.generator[1][ind];
         if (min > cx * cx + cy * cy || ind < 1) {
           // Update or initialize search
           min = cx * cx + cy * cy;
@@ -187,8 +187,8 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
 
   public void mouseReleased(MouseEvent ev) {
     if (capturing) {
-      final float x = transformCoord(ev.getX());
-      final float y = transformCoord(ev.getY());
+      final double x = transformCoord(ev.getX());
+      final double y = transformCoord(ev.getY());
 
       capturing = false;
 
@@ -197,7 +197,7 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
       final Tiling tiling = quasi.getTiling();
 
       if (rotating) {
-        final float end_angle = toDegree(x, y);
+        final double end_angle = toDegree(x, y);
         tiling.rotateGenerators(end_angle - start_angle);
       } else {
         if (!calcGenerator(x, y)) {
@@ -250,14 +250,14 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
    *** Private computers.
    **/
 
-  private float transformCoord(float c) {
+  private double transformCoord(double c) {
     return c / zoom - centerOffsetFactor;
   }
 
-  private boolean calcGenerator(float x, float y) {
+  private boolean calcGenerator(double x, double y) {
     // Constrains the generator to the maximum radius.
 
-    float norm = (float) Math.sqrt(x * x + y * y);
+    double norm = (double) Math.sqrt(x * x + y * y);
 
     if (norm > rotationThreshold) {
       phantomGenerator.x = rotationThreshold * x / norm;
@@ -269,29 +269,29 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
 
     // Checks that the user is not dragging over the view origin.
 
-    return norm >= 0.05f;
+    return norm >= 0.05;
   }
 
-  private static float toDegree(float x, float y) {
+  private static double toDegree(double x, double y) {
     final double norm = Math.sqrt(x * x + y * y);
-    return (float) (y >= 0 ? Math.acos(x / norm) : 2 * Math.PI - Math.acos(x / norm));
+    return (double) (y >= 0 ? Math.acos(x / norm) : 2 * Math.PI - Math.acos(x / norm));
   }
 
   /**
    *** Data.
    **/
 
-  private static final float rotationThreshold = 1.5f;
-  private static final float centerOffsetFactor = rotationThreshold + 0.1f;
+  private static final double rotationThreshold = 1.5;
+  private static final double centerOffsetFactor = rotationThreshold + 0.1;
 
   private QuasiTiler quasi;
-  private float zoom = 30;
+  private double zoom = 30;
 
   private boolean capturing;
   private boolean rotating;
   private int selected;
-  private float start_angle;
-  private float start_x;
-  private float start_y;
+  private double start_angle;
+  private double start_x;
+  private double start_y;
   private TilingPoint phantomGenerator = new TilingPoint();
 }
