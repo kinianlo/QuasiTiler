@@ -11,7 +11,7 @@ Modifications made:
 - All floats are replaced by doubles to increase precision. 
 - An __export/__ folder will be created at the first run-time. The coordinates of the included vertices, the projected vertices and the "generator" are exported into the text files __vertices.txt__, __tiles.txt__ and __generator.txt__ respectively.
 
-What's inside each export text files?
+What's inside each export text file?
 
 __vertices.txt__: Each line contains the coordinates of an included vertex in the ambient space (or superspace), separated by a tab ('\t'). 
 
