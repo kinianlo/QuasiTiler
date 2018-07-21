@@ -43,14 +43,14 @@ public class App {
 			}
 		if (args.length > 1)
 			try {
-				default_zoom = double.valueOf(args[1]).doubleValue();
+				default_zoom = Double.valueOf(args[1]).doubleValue();
 			} catch (NumberFormatException e) {
 				System.err.println("Argument #2 error: " + e.getMessage());
 			}
 		for (int i = 0; i < default_dim * 2; ++i)
 			if (args.length > i + 2)
 				try {
-					default_bounds[i % 2][i / 2] = double.valueOf(args[i + 2]).doubleValue();
+					default_bounds[i % 2][i / 2] = Double.valueOf(args[i + 2]).doubleValue();
 				} catch (NumberFormatException e) {
 					System.err.println("Argument #" + (i + 3) + " error: " + e.getMessage());
 				}
@@ -58,7 +58,7 @@ public class App {
 		for (int i = 0; i < default_dim; ++i)
 			if (args.length > i + 2 + default_dim * 2)
 				try {
-					default_offsets[i] = double.valueOf(args[i + 2 + default_dim * 2]).doubleValue();
+					default_offsets[i] = Double.valueOf(args[i + 2 + default_dim * 2]).doubleValue();
 				} catch (NumberFormatException e) {
 					System.err.println("Argument #" + (i + 3 + default_dim * 2) + " error: " + e.getMessage());
 				}

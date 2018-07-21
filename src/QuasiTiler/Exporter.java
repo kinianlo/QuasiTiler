@@ -46,7 +46,7 @@ public class Exporter {
             PrintWriter print_line = new PrintWriter(write);
             for (int d = 0; d < 2; d++) {
                 for (int i = 0; i < dim; i++) {
-                    print_line.printf("%0.20f\t", generator[d][i]);
+                    print_line.printf("%f\t", generator[d][i]);
                 }
                 print_line.printf("\n");
             }

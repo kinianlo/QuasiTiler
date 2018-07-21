@@ -58,7 +58,7 @@ public class TileView extends Canvas implements View {
     public void paint(Graphics gfx) {
         if (gfx instanceof Graphics2D) {
             Graphics2D gfx2 = (Graphics2D) gfx;
-            gfx2.setStroke(new BasicStroke(edge_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+            gfx2.setStroke(new BasicStroke((float) edge_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
             gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
