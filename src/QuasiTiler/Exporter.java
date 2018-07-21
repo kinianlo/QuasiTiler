@@ -55,4 +55,17 @@ public class Exporter {
             ex.printStackTrace(System.out);
         }
     }
+
+    public static void saveOffset(double[] offset, int dim) {
+        try {
+            FileWriter write = new FileWriter("export/offset.txt", false);
+            PrintWriter print_line = new PrintWriter(write);
+            for (int i = 0; i < dim; i++) {
+                print_line.printf("%.100f\t", offset[i]);
+            }
+            print_line.close();
+        } catch (IOException ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
 }

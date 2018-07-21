@@ -87,6 +87,7 @@ public class TileView extends Canvas implements View {
         Exporter.saveVertices(drawing.vertex_storage, tiling.ambient_dim);
         Exporter.saveTiles(vertices);
         Exporter.saveGenerator(tiling.generator, tiling.ambient_dim);
+        Exporter.saveOffset(tiling.offset, tiling.ambient_dim);
 
         // Premultiply the edge generators by their correct sign.
 
