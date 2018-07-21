@@ -32,7 +32,7 @@ public class Exporter {
             FileWriter write = new FileWriter("export/tiles.txt", false);
             PrintWriter print_line = new PrintWriter(write);
             for (int i = 0; i < tilingPoints.length; i++) {
-                print_line.printf("%f\t%f\n", tilingPoints[i].x, tilingPoints[i].y);
+                print_line.printf("%.100f\t%.100f\n", tilingPoints[i].x, tilingPoints[i].y);
             }
             print_line.close();
         } catch (IOException ex) {
@@ -46,7 +46,7 @@ public class Exporter {
             PrintWriter print_line = new PrintWriter(write);
             for (int d = 0; d < 2; d++) {
                 for (int i = 0; i < dim; i++) {
-                    print_line.printf("%f\t", generator[d][i]);
+                    print_line.printf("%.100f\t", generator[d][i]);
                 }
                 print_line.printf("\n");
             }
