@@ -85,7 +85,7 @@ public class TileView extends Canvas implements View {
         }
 
         Exporter.saveVertices(drawing.vertex_storage, tiling.ambient_dim);
-        Exporter.saveTiles(vertices);
+        Exporter.saveProjectedVectices(vertices);
         Exporter.saveGenerator(tiling.generator, tiling.ambient_dim);
         Exporter.saveOffset(tiling.offset, tiling.ambient_dim);
 
@@ -100,8 +100,12 @@ public class TileView extends Canvas implements View {
         // Display the tiles.
 
         if (tilesDisplayed || edgesDisplayed || verticesDisplayed) {
+            Exporter tiles_exporter = new Exporter("export/tiles.txt");
             int[] quad_x = new int[4];
             int[] quad_y = new int[4];
+            double centroid_x;
+            double centroid_y;
+
             TileList[] tile_storage = drawing.tile_storage;
             for (int comb = tiling.tile_count; --comb >= 0;) {
                 final int gen0 = tiling.tile_generator[comb][0];
@@ -112,12 +116,20 @@ public class TileView extends Canvas implements View {
                     final int vertex_index = tile_storage[comb].array[ind];
                     quad_x[0] = (int) (zoom * (vertices[vertex_index].x));
                     quad_y[0] = (int) (zoom * (vertices[vertex_index].y));
+
                     quad_x[1] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0]));
                     quad_y[1] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1]));
+
                     quad_x[2] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0] + generator[gen1][0]));
                     quad_y[2] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1] + generator[gen1][1]));
+
                     quad_x[3] = (int) (zoom * (vertices[vertex_index].x + generator[gen1][0]));
                     quad_y[3] = (int) (zoom * (vertices[vertex_index].y + generator[gen1][1]));
+
+                    centroid_x = vertices[vertex_index].x + (generator[gen0][0] + generator[gen1][0]) / 2.0;
+                    centroid_y = vertices[vertex_index].y + (generator[gen0][1] + generator[gen1][1]) / 2.0;
+
+                    tiles_exporter.writeTile(comb, centroid_x, centroid_y, dim);
 
                     if (tilesDisplayed) {
                         gfx.setColor(tileColor);
@@ -139,8 +151,11 @@ public class TileView extends Canvas implements View {
 
                 // if ( interrupted ( ) )
                 // return;
+
             }
+            tiles_exporter.close();
         }
+
     }
 
     /**

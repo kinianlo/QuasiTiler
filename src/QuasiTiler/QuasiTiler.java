@@ -217,5 +217,5 @@ public class QuasiTiler implements View {
      *** Views.
      **/
 
-    private java.util.Vector views = new java.util.Vector();
+    private java.util.Vector<View> views = new java.util.Vector<View>();
 }
