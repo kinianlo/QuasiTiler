@@ -128,17 +128,19 @@ public class TileView extends Canvas implements View {
 
                 for (int ind = 0; ind < tile_storage[comb].count; ++ind) {
                     final int vertex_index = tile_storage[comb].array[ind];
-                    quad_x[0] = (int) (zoom * (vertices[vertex_index].x));
-                    quad_y[0] = (int) (zoom * (vertices[vertex_index].y));
+                    quad_x[0] = (int) (zoom * (vertices[vertex_index].x)) + w / 2;
+                    quad_y[0] = (int) (zoom * (vertices[vertex_index].y)) + h / 2;
 
-                    quad_x[1] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0]));
-                    quad_y[1] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1]));
+                    quad_x[1] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0])) + w / 2;
+                    quad_y[1] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1])) + h / 2;
 
-                    quad_x[2] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0] + generator[gen1][0]));
-                    quad_y[2] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1] + generator[gen1][1]));
+                    quad_x[2] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0] + generator[gen1][0]))
+                            + w / 2;
+                    quad_y[2] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1] + generator[gen1][1]))
+                            + h / 2;
 
-                    quad_x[3] = (int) (zoom * (vertices[vertex_index].x + generator[gen1][0]));
-                    quad_y[3] = (int) (zoom * (vertices[vertex_index].y + generator[gen1][1]));
+                    quad_x[3] = (int) (zoom * (vertices[vertex_index].x + generator[gen1][0])) + w / 2;
+                    quad_y[3] = (int) (zoom * (vertices[vertex_index].y + generator[gen1][1])) + h / 2;
 
                     centroid_x = vertices[vertex_index].x + (generator[gen0][0] + generator[gen1][0]) / 2.0;
                     centroid_y = vertices[vertex_index].y + (generator[gen0][1] + generator[gen1][1]) / 2.0;
