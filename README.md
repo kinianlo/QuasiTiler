@@ -9,6 +9,8 @@ For an excellent explanation about the how the program works, please consult an 
 
 __Modifications made:__
 - All floats are replaced by doubles to increase precision. 
+- Greatly improved rendering speed.
+- Allow an option for displaying the centroid of tiles. 
 - An __export/__ folder will be created at the first run-time. The coordinates of the included vertices, the projected vertices, the "generator" and the offset vector are exported into the text files __vertices.txt__, __tiles.txt__, __generator.txt__ and __offset.txt__ respectively. The contents in the export files will be updated every time the tiling in the program is updated.
 
 __What's inside each export text file?__
