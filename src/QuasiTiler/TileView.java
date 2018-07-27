@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 public class TileView extends Canvas implements View {
     /**
@@ -55,11 +56,18 @@ public class TileView extends Canvas implements View {
      *** Computers.
      **/
 
+    @Override
+    public void update(Graphics g) {
+        paint(g);
+    }
+
     public void paint(Graphics gfx) {
         if (gfx instanceof Graphics2D) {
             Graphics2D gfx2 = (Graphics2D) gfx;
-            gfx2.setStroke(new BasicStroke((float) edge_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
-            gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            // gfx2.setStroke(new BasicStroke((float) edge_width, BasicStroke.CAP_BUTT,
+            // BasicStroke.JOIN_BEVEL));
+            // gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            // RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
         // Get local for speed.
@@ -101,6 +109,12 @@ public class TileView extends Canvas implements View {
 
         if (tilesDisplayed || edgesDisplayed || verticesDisplayed) {
             Exporter tiles_exporter = new Exporter("export/tiles.txt");
+            int w = gfx.getClipBounds().width;
+            int h = gfx.getClipBounds().height;
+            BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+            Graphics2D gfx_buffer = buffer.createGraphics();
+            gfx_buffer.setColor(Color.white);
+            gfx_buffer.fillRect(0, 0, w, h);
             int[] quad_x = new int[4];
             int[] quad_y = new int[4];
             double centroid_x;
@@ -132,19 +146,15 @@ public class TileView extends Canvas implements View {
                     tiles_exporter.writeTile(comb, centroid_x, centroid_y, dim);
 
                     if (tilesDisplayed) {
-                        gfx.setColor(tileColor);
-                        gfx.fillPolygon(quad_x, quad_y, 4);
+                        gfx_buffer.setColor(tileColor);
+                        gfx_buffer.fillPolygon(quad_x, quad_y, 4);
                     }
 
                     if (edgesDisplayed) {
-                        gfx.setColor(edgeColor);
-                        gfx.drawPolygon(quad_x, quad_y, 4);
+                        gfx_buffer.setColor(edgeColor);
+                        gfx_buffer.drawPolygon(quad_x, quad_y, 4);
                     }
 
-                    if (verticesDisplayed) {
-                        gfx.setColor(Color.black);
-                        gfx.drawLine(quad_x[0], quad_y[0], quad_x[0], quad_y[0]);
-                    }
                 }
 
                 // Check if the user wants to stop right now
@@ -154,6 +164,7 @@ public class TileView extends Canvas implements View {
 
             }
             tiles_exporter.close();
+            gfx.drawImage(buffer, 0, 0, null);
         }
 
     }

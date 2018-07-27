@@ -15,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 public class OffsetView extends Canvas implements View {
       /**
@@ -45,8 +46,14 @@ public class OffsetView extends Canvas implements View {
                   Graphics2D gfx2 = (Graphics2D) gfx;
                   gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             }
+            int w = gfx.getClipBounds().width;
+            int h = gfx.getClipBounds().height;
+            BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+            Graphics2D gfx_buffer = buffer.createGraphics();
+            gfx_buffer.setColor(Color.white);
+            gfx_buffer.fillRect(0, 0, w, h);
 
-            gfx.translate((int) (1.5 * zoom), (int) (1.5 * zoom));
+            gfx_buffer.translate((int) (1.5 * zoom), (int) (1.5 * zoom));
 
             final Tiling tiling = quasi.getTiling();
             final Drawing drawing = quasi.getDrawing();
@@ -84,11 +91,12 @@ public class OffsetView extends Canvas implements View {
 
                   // Generate all the edges.
 
-                  gfx.setColor(Color.gray);
+                  gfx_buffer.setColor(Color.gray);
                   for (int ind = 0; ind < vertex_count; ind++)
                         for (int ind1 = 0, mask = 1; ind1 < tiling.ambient_dim; ind1++, mask <<= 1)
                               if (0 == (ind & mask)) {
-                                    gfx.drawLine((int) (zoom * cell_vertex[ind][0]), (int) (zoom * cell_vertex[ind][1]),
+                                    gfx_buffer.drawLine((int) (zoom * cell_vertex[ind][0]),
+                                                (int) (zoom * cell_vertex[ind][1]),
                                                 (int) (zoom * cell_vertex[ind | mask][0]),
                                                 (int) (zoom * cell_vertex[ind | mask][1]));
                               }
@@ -100,7 +108,7 @@ public class OffsetView extends Canvas implements View {
                   if (cnt == 0)
                         return;
 
-                  gfx.setColor(Color.black);
+                  gfx_buffer.setColor(Color.black);
                   double avg_density = cnt / (double) (OFFSETVIEW_RADIUS * OFFSETVIEW_RADIUS);
                   // if ( avg_density == 0) PSsetlinewidth(0.075);
                   // else PSsetlinewidth(sqrt(1/avg_density));
@@ -109,14 +117,15 @@ public class OffsetView extends Canvas implements View {
                   int[] lp = drawing.vertex_storage.array;
                   for (int ind = 0; ind < cnt; ++ind) {
                         drawing.lattice_to_orthogonal(lp, ind * tiling.ambient_dim, op);
-                        gfx.drawLine((int) op.x, (int) op.y, (int) op.x, (int) op.y);
+                        gfx_buffer.drawLine((int) op.x, (int) op.y, (int) op.x, (int) op.y);
                   }
             }
 
             // Draw a point at the value of the offset.
 
-            gfx.setColor(Color.red);
-            gfx.fillOval((int) (offset_coords[0] - 2), (int) (offset_coords[1] - 2), 4, 4);
+            gfx_buffer.setColor(Color.red);
+            gfx_buffer.fillOval((int) (offset_coords[0] - 2), (int) (offset_coords[1] - 2), 4, 4);
+            gfx.drawImage(buffer, 0, 0, null);
       }
 
       /**

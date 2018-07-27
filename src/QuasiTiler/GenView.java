@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 public class GenView extends Canvas implements View, MouseListener, MouseMotionListener {
   public GenView(QuasiTiler aQuasi) {
@@ -45,7 +46,14 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
       gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
-    gfx.translate((int) (centerOffsetFactor * zoom), (int) (centerOffsetFactor * zoom));
+    int w = gfx.getClipBounds().width;
+    int h = gfx.getClipBounds().height;
+    BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+    Graphics2D gfx_buffer = buffer.createGraphics();
+    gfx_buffer.setColor(Color.white);
+    gfx_buffer.fillRect(0, 0, w, h);
+
+    gfx_buffer.translate((int) (centerOffsetFactor * zoom), (int) (centerOffsetFactor * zoom));
 
     final Tiling tiling = quasi.getTiling();
     if (null == tiling)
@@ -56,20 +64,20 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
 
     // Draw circle with marks.
 
-    gfx.setColor(Color.gray);
+    gfx_buffer.setColor(Color.gray);
     {
       int corner = (int) (zoom * factor);
       int size = (int) (2 * zoom * factor);
-      gfx.drawOval(-corner, -corner, size, size);
+      gfx_buffer.drawOval(-corner, -corner, size, size);
       corner = (int) (rotationThreshold * zoom);
       size = (int) (2 * rotationThreshold * zoom);
-      gfx.drawOval(-corner, -corner, size, size);
+      gfx_buffer.drawOval(-corner, -corner, size, size);
     }
 
     for (int ind = -ambient_dim; ind < ambient_dim; ++ind) {
       final double x = (double) (zoom * factor * Math.cos(0.5 * Math.PI + ind * Math.PI / ambient_dim));
       final double y = (double) (zoom * factor * Math.sin(0.5 * Math.PI + ind * Math.PI / ambient_dim));
-      gfx.drawLine((int) x, (int) y, (int) (0.9 * x), (int) (0.9 * y));
+      gfx_buffer.drawLine((int) x, (int) y, (int) (0.9 * x), (int) (0.9 * y));
     }
 
     // Draw the small tile contours.
@@ -85,7 +93,7 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
 
     // Draw the tiles.
 
-    gfx.setColor(Color.black);
+    gfx_buffer.setColor(Color.black);
     int[] quad_x = new int[4];
     int[] quad_y = new int[4];
     for (int gen1 = 0; gen1 < 2 * ambient_dim; ++gen1) {
@@ -98,25 +106,26 @@ public class GenView extends Canvas implements View, MouseListener, MouseMotionL
       quad_y[2] = (int) (zoom * (handle[gen0].y + handle[gen1].y));
       quad_x[3] = (int) (zoom * (handle[gen1].x));
       quad_y[3] = (int) (zoom * (handle[gen1].y));
-      gfx.drawPolygon(quad_x, quad_y, 4);
+      gfx_buffer.drawPolygon(quad_x, quad_y, 4);
     }
 
     // Draw handles.
 
     for (int gen1 = 0; gen1 < 2 * ambient_dim; ++gen1) {
-      gfx.fillOval((int) (zoom * handle[gen1].x) - 2, (int) (zoom * handle[gen1].y) - 2, 4, 4);
+      gfx_buffer.fillOval((int) (zoom * handle[gen1].x) - 2, (int) (zoom * handle[gen1].y) - 2, 4, 4);
     }
 
     // Mouse dragging to change generators.
 
     if (capturing) {
-      gfx.setColor(Color.red);
-      gfx.drawLine(0, 0, (int) (zoom * phantomGenerator.x), (int) (zoom * phantomGenerator.y));
+      gfx_buffer.setColor(Color.red);
+      gfx_buffer.drawLine(0, 0, (int) (zoom * phantomGenerator.x), (int) (zoom * phantomGenerator.y));
       if (rotating) {
-        gfx.setColor(Color.gray);
-        gfx.drawLine(0, 0, (int) (zoom * start_x), (int) (zoom * start_y));
+        gfx_buffer.setColor(Color.gray);
+        gfx_buffer.drawLine(0, 0, (int) (zoom * start_x), (int) (zoom * start_y));
       }
     }
+    gfx.drawImage(buffer, 0, 0, null);
   }
 
   /**
