@@ -29,7 +29,7 @@ public class TileUI extends Panel3D implements ItemListener {
         addCB(displayEdges);
         add(width);
         width.addItemListener(this);
-        addCB(displayVertices);
+        addCB(displayCentroids);
         add(new Panel());
         view.setEdgeWidth(width.getSelectedIndex() + 1);
     }
@@ -55,8 +55,8 @@ public class TileUI extends Panel3D implements ItemListener {
             view.repaint();
             return;
         }
-        if (source == displayVertices) {
-            view.displayVertices(displayVertices.getState());
+        if (source == displayCentroids) {
+            view.displayCentroids(displayCentroids.getState());
             view.repaint();
             return;
         }
@@ -74,7 +74,7 @@ public class TileUI extends Panel3D implements ItemListener {
     private TileView view;
     private Checkbox displayTiles = new Checkbox("Display Tiles", true);
     private Checkbox displayEdges = new Checkbox("Display Edges", true);
-    private Checkbox displayVertices = new Checkbox("Display Vertices", false);
+    private Checkbox displayCentroids = new Checkbox("Display Centroids", false);
     private Choice width = new Choice();
 
     {

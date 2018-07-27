@@ -40,8 +40,8 @@ public class TileView extends Canvas implements View {
         edgesDisplayed = displayed;
     }
 
-    public void displayVertices(boolean displayed) {
-        verticesDisplayed = displayed;
+    public void displayCentroids(boolean displayed) {
+        centroidsDisplayed = displayed;
     }
 
     public void setZoom(double aZoom) {
@@ -64,10 +64,8 @@ public class TileView extends Canvas implements View {
     public void paint(Graphics gfx) {
         if (gfx instanceof Graphics2D) {
             Graphics2D gfx2 = (Graphics2D) gfx;
-            // gfx2.setStroke(new BasicStroke((float) edge_width, BasicStroke.CAP_BUTT,
-            // BasicStroke.JOIN_BEVEL));
-            // gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            // RenderingHints.VALUE_ANTIALIAS_ON);
+            gfx2.setStroke(new BasicStroke((float) edge_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+            gfx2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
         // Get local for speed.
@@ -107,67 +105,66 @@ public class TileView extends Canvas implements View {
 
         // Display the tiles.
 
-        if (tilesDisplayed || edgesDisplayed || verticesDisplayed) {
-            Exporter tiles_exporter = new Exporter("export/tiles.txt");
-            int w = gfx.getClipBounds().width;
-            int h = gfx.getClipBounds().height;
-            BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-            Graphics2D gfx_buffer = buffer.createGraphics();
-            gfx_buffer.setColor(Color.white);
-            gfx_buffer.fillRect(0, 0, w, h);
-            int[] quad_x = new int[4];
-            int[] quad_y = new int[4];
-            double centroid_x;
-            double centroid_y;
+        Exporter tiles_exporter = new Exporter("export/tiles.txt");
+        int w = gfx.getClipBounds().width;
+        int h = gfx.getClipBounds().height;
+        BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        Graphics2D gfx_buffer = buffer.createGraphics();
+        gfx_buffer.setStroke(new BasicStroke((float) edge_width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+        gfx_buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gfx_buffer.setColor(Color.white);
+        gfx_buffer.fillRect(0, 0, w, h);
+        int[] quad_x = new int[4];
+        int[] quad_y = new int[4];
+        double centroid_x;
+        double centroid_y;
 
-            TileList[] tile_storage = drawing.tile_storage;
-            for (int comb = tiling.tile_count; --comb >= 0;) {
-                final int gen0 = tiling.tile_generator[comb][0];
-                final int gen1 = tiling.tile_generator[comb][1];
-                final Color tileColor = quasi.getTileColor(comb);
+        TileList[] tile_storage = drawing.tile_storage;
+        for (int comb = tiling.tile_count; --comb >= 0;) {
+            final int gen0 = tiling.tile_generator[comb][0];
+            final int gen1 = tiling.tile_generator[comb][1];
+            final Color tileColor = quasi.getTileColor(comb);
 
-                for (int ind = 0; ind < tile_storage[comb].count; ++ind) {
-                    final int vertex_index = tile_storage[comb].array[ind];
-                    quad_x[0] = (int) (zoom * (vertices[vertex_index].x)) + w / 2;
-                    quad_y[0] = (int) (zoom * (vertices[vertex_index].y)) + h / 2;
+            for (int ind = 0; ind < tile_storage[comb].count; ++ind) {
+                final int vertex_index = tile_storage[comb].array[ind];
+                quad_x[0] = (int) (zoom * (vertices[vertex_index].x)) + w / 2;
+                quad_y[0] = (int) (zoom * (vertices[vertex_index].y)) + h / 2;
 
-                    quad_x[1] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0])) + w / 2;
-                    quad_y[1] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1])) + h / 2;
+                quad_x[1] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0])) + w / 2;
+                quad_y[1] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1])) + h / 2;
 
-                    quad_x[2] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0] + generator[gen1][0]))
-                            + w / 2;
-                    quad_y[2] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1] + generator[gen1][1]))
-                            + h / 2;
+                quad_x[2] = (int) (zoom * (vertices[vertex_index].x + generator[gen0][0] + generator[gen1][0])) + w / 2;
+                quad_y[2] = (int) (zoom * (vertices[vertex_index].y + generator[gen0][1] + generator[gen1][1])) + h / 2;
 
-                    quad_x[3] = (int) (zoom * (vertices[vertex_index].x + generator[gen1][0])) + w / 2;
-                    quad_y[3] = (int) (zoom * (vertices[vertex_index].y + generator[gen1][1])) + h / 2;
+                quad_x[3] = (int) (zoom * (vertices[vertex_index].x + generator[gen1][0])) + w / 2;
+                quad_y[3] = (int) (zoom * (vertices[vertex_index].y + generator[gen1][1])) + h / 2;
 
-                    centroid_x = vertices[vertex_index].x + (generator[gen0][0] + generator[gen1][0]) / 2.0;
-                    centroid_y = vertices[vertex_index].y + (generator[gen0][1] + generator[gen1][1]) / 2.0;
+                centroid_x = vertices[vertex_index].x + (generator[gen0][0] + generator[gen1][0]) / 2.0;
+                centroid_y = vertices[vertex_index].y + (generator[gen0][1] + generator[gen1][1]) / 2.0;
 
-                    tiles_exporter.writeTile(comb, centroid_x, centroid_y, dim);
+                tiles_exporter.writeTile(comb, centroid_x, centroid_y, dim);
 
-                    if (tilesDisplayed) {
-                        gfx_buffer.setColor(tileColor);
-                        gfx_buffer.fillPolygon(quad_x, quad_y, 4);
-                    }
-
-                    if (edgesDisplayed) {
-                        gfx_buffer.setColor(edgeColor);
-                        gfx_buffer.drawPolygon(quad_x, quad_y, 4);
-                    }
-
+                if (tilesDisplayed) {
+                    gfx_buffer.setColor(tileColor);
+                    gfx_buffer.fillPolygon(quad_x, quad_y, 4);
                 }
 
-                // Check if the user wants to stop right now
+                if (edgesDisplayed) {
+                    gfx_buffer.setColor(edgeColor);
+                    gfx_buffer.drawPolygon(quad_x, quad_y, 4);
+                }
 
-                // if ( interrupted ( ) )
-                // return;
+                if (centroidsDisplayed) {
+                    gfx_buffer.setColor(edgeColor);
+                    gfx_buffer.fillOval((int) (zoom * centroid_x) + w / 2, (int) (zoom * centroid_y) + h / 2,
+                            (int) edge_width * 2, (int) edge_width * 2);
+                }
 
             }
-            tiles_exporter.close();
-            gfx.drawImage(buffer, 0, 0, null);
+
         }
+        tiles_exporter.close();
+        gfx.drawImage(buffer, 0, 0, null);
 
     }
 
@@ -221,7 +218,8 @@ public class TileView extends Canvas implements View {
 
     private boolean tilesDisplayed = true;
     private boolean edgesDisplayed = true;
-    private boolean verticesDisplayed = false;
+    private boolean centroidsDisplayed = false;
+
     private double zoom = 30;
     private double edge_width = 2;
 
