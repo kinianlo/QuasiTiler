@@ -107,6 +107,62 @@ public class QuasiTiler implements View {
      *** Accessors.
      **/
 
+    public double[][] getTiles() {
+        if (null == tiling || null == drawing)
+            return null;
+
+        final int dim = tiling.ambient_dim;
+        final int vertex_count = drawing.vertex_storage.count / dim;
+
+        // Compute the projection of the lattice vertices.
+
+        TilingPoint[] vertices = new TilingPoint[vertex_count];
+        for (int ind = 0; ind < vertex_count; ++ind) {
+            vertices[ind] = new TilingPoint();
+        }
+        int[] lp = drawing.vertex_storage.array;
+        for (int ind = 0; ind < vertex_count; ind++) {
+            drawing.lattice_to_tiling(lp, ind * dim, vertices[ind]);
+        }
+
+        // Premultiply the edge generators by their correct sign.
+
+        double[][] generator = new double[Tiling.MAX_DIM][2];
+        for (int ind = 0; ind < dim; ++ind) {
+            generator[ind][0] = tiling.sgn[ind] * tiling.generator[0][ind];
+            generator[ind][1] = tiling.sgn[ind] * tiling.generator[1][ind];
+        }
+
+        // Display the tiles.
+        TileList[] tile_storage = drawing.tile_storage;
+        int num_tiles = 0;
+        for (int comb = tiling.tile_count; --comb >= 0;) {
+            for (int ind = 0; ind < tile_storage[comb].count; ++ind) {
+                num_tiles++;
+            }
+        }
+
+        double[][] output = new double[num_tiles][3];
+
+        int i = 0;
+        for (int comb = tiling.tile_count; --comb >= 0;) {
+            final int gen0 = tiling.tile_generator[comb][0];
+            final int gen1 = tiling.tile_generator[comb][1];
+
+            for (int ind = 0; ind < tile_storage[comb].count; ++ind) {
+                final int vertex_index = tile_storage[comb].array[ind];
+
+                double centroid_x = vertices[vertex_index].x + (generator[gen0][0] + generator[gen1][0]) / 2.0;
+                double centroid_y = vertices[vertex_index].y + (generator[gen0][1] + generator[gen1][1]) / 2.0;
+                output[i][0] = (double) comb;
+                output[i][1] = centroid_x;
+                output[i][2] = centroid_y;
+                i++;
+            }
+        }
+        return output;
+    }
+
     public int getDimension() {
         return quasi_dim;
     }
